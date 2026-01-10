@@ -1,0 +1,6 @@
+@GlobalSearch.API_HostAddress = http://localhost:5295
+
+GET {{GlobalSearch.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
