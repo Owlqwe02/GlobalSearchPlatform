@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GlobalSearch.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+dfa59f493633beaa3983e614ed5d2e89de353a28")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+235fdca3bea082716ac9df1cf10ae1a6845da861")]
 [assembly: System.Reflection.AssemblyProductAttribute("GlobalSearch.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GlobalSearch.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
