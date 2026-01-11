@@ -11,6 +11,7 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // API URL: Vercel değişkeni yoksa Render linkini kullan
     const baseUrl = (process.env.NEXT_PUBLIC_API_URL as string) || "https://globalsearchplatform.onrender.com/api";
     const endpoint = isLogin ? 'login' : 'register';
     
