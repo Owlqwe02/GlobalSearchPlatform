@@ -11,6 +11,7 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // API URL: /api eki eklendi. Render üzerindeki .NET API'ye tam erişim sağlar.
     const baseUrl = (process.env.NEXT_PUBLIC_API_URL as string) || "https://globalsearchplatform.onrender.com/api";
     const endpoint = isLogin ? 'login' : 'register';
     
@@ -30,15 +31,15 @@ export default function LoginPage() {
           if (user.role === 'Admin') router.push('/admin/ads');
           else router.push('/');
         } else {
-          alert("Kayıt Başarılı! Giriş yapabilirsiniz.");
+          alert("Kayıt Başarılı! Şimdi giriş yapabilirsiniz.");
           setIsLogin(true);
         }
       } else {
         const errorMsg = await res.text();
-        alert("Hata: " + errorMsg);
+        alert("Hata (404/500): " + errorMsg);
       }
     } catch (err) {
-      alert("Bağlantı hatası! API adresi yanlış veya sunucu kapalı.");
+      alert("Bağlantı hatası! Sunucu şu an kapalı olabilir. API: " + baseUrl);
     }
   };
 
