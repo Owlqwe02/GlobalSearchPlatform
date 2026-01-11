@@ -5,17 +5,18 @@ import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
   const router = useRouter();
-  const [isLogin, setIsLogin] = useState(true); // Giriş mi Kayıt mı?
+  const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({ username: '', password: '' });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // API URL'si (Login veya Register)
+    // API URL'si: Vercel değişkeni yoksa doğrudan Render linkini kullan (Hata almanı engeller)
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || "https://globalsearchplatform.onrender.com/api";
     const endpoint = isLogin ? 'login' : 'register';
     
     try {
-      const res = await fetch(`http://localhost:5295/api/Auth/${endpoint}`, {
+      const res = await fetch(`${baseUrl}/Auth/${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
@@ -24,22 +25,22 @@ export default function LoginPage() {
       if (res.ok) {
         if (isLogin) {
           const user = await res.json();
-          // Kullanıcıyı tarayıcı hafızasına kaydet
           localStorage.setItem('user', JSON.stringify(user));
           alert("Giriş Başarılı! Yönlendiriliyorsunuz...");
           
-          // Eğer Adminseniz panele, değilseniz ana sayfaya
           if (user.role === 'Admin') router.push('/admin/ads');
           else router.push('/');
         } else {
           alert("Kayıt Başarılı! Şimdi giriş yapabilirsiniz.");
-          setIsLogin(true); // Giriş ekranına dön
+          setIsLogin(true);
         }
       } else {
-        alert("Hata: " + (await res.text()));
+        const errorText = await res.text();
+        alert("Hata: " + errorText);
       }
     } catch (err) {
-      alert("Bağlantı hatası!");
+      alert("Bağlantı hatası! Sunucuya ulaşılamıyor.");
+      console.error("API Error:", err);
     }
   };
 
@@ -57,7 +58,7 @@ export default function LoginPage() {
             required 
             value={formData.username}
             onChange={e => setFormData({...formData, username: e.target.value})}
-            style={{ padding: '12px', borderRadius: '8px', border: '1px solid #e5e7eb' }}
+            style={{ padding: '12px', borderRadius: '8px', border: '1px solid #e5e7eb', color: 'black' }}
           />
           <input 
             type="password" 
@@ -65,7 +66,7 @@ export default function LoginPage() {
             required 
             value={formData.password}
             onChange={e => setFormData({...formData, password: e.target.value})}
-            style={{ padding: '12px', borderRadius: '8px', border: '1px solid #e5e7eb' }}
+            style={{ padding: '12px', borderRadius: '8px', border: '1px solid #e5e7eb', color: 'black' }}
           />
           <button type="submit" style={{ padding: '12px', borderRadius: '8px', border: 'none', backgroundColor: '#3b82f6', color: 'white', fontWeight: 'bold', cursor: 'pointer' }}>
             {isLogin ? 'Giriş Yap' : 'Kayıt Ol'}
