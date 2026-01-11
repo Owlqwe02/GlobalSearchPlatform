@@ -11,7 +11,6 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // API URL'si: Vercel değişkeni yoksa Render linkini kullan
     const baseUrl = (process.env.NEXT_PUBLIC_API_URL as string) || "https://globalsearchplatform.onrender.com/api";
     const endpoint = isLogin ? 'login' : 'register';
     
@@ -39,7 +38,7 @@ export default function LoginPage() {
         alert("Hata: " + errorMsg);
       }
     } catch (err) {
-      alert("Bağlantı hatası! API: " + baseUrl);
+      alert("Bağlantı hatası! API adresi yanlış veya sunucu kapalı.");
     }
   };
 
