@@ -11,7 +11,7 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // API URL: /api eki eklendi. Render üzerindeki .NET API yolu ile eşleşir.
+    // API URL: /api eki burada hayati önem taşıyor.
     const baseUrl = (process.env.NEXT_PUBLIC_API_URL as string) || "https://globalsearchplatform.onrender.com/api";
     const endpoint = isLogin ? 'login' : 'register';
     
@@ -36,51 +36,29 @@ export default function LoginPage() {
         }
       } else {
         const errorMsg = await res.text();
-        alert("Sunucu Yanıtı (404/500): " + errorMsg);
+        alert("Sunucu Hatası (404/500): " + errorMsg);
       }
     } catch (err) {
-      alert("Bağlantı hatası! API yolu: " + baseUrl);
+      alert("Bağlantı hatası! API: " + baseUrl);
     }
   };
 
   return (
     <div style={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', backgroundColor: '#f3f4f6' }}>
       <div style={{ backgroundColor: 'white', padding: '40px', borderRadius: '16px', boxShadow: '0 10px 25px rgba(0,0,0,0.1)', width: '350px' }}>
-        <h2 style={{ textAlign: 'center', marginBottom: '20px', color: '#1f2937' }}>
-          {isLogin ? 'Giriş Yap' : 'Kayıt Ol'}
-        </h2>
+        <h2 style={{ textAlign: 'center', marginBottom: '20px', color: '#1f2937' }}>{isLogin ? 'Giriş Yap' : 'Kayıt Ol'}</h2>
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-          <input 
-            type="text" 
-            placeholder="Kullanıcı Adı" 
-            required 
-            value={formData.username}
-            onChange={e => setFormData({...formData, username: e.target.value})}
-            style={{ padding: '12px', borderRadius: '8px', border: '1px solid #e5e7eb', color: 'black' }}
-          />
-          <input 
-            type="password" 
-            placeholder="Şifre" 
-            required 
-            value={formData.password}
-            onChange={e => setFormData({...formData, password: e.target.value})}
-            style={{ padding: '12px', borderRadius: '8px', border: '1px solid #e5e7eb', color: 'black' }}
-          />
-          <button type="submit" style={{ padding: '12px', borderRadius: '8px', border: 'none', backgroundColor: '#3b82f6', color: 'white', fontWeight: 'bold', cursor: 'pointer' }}>
-            {isLogin ? 'Giriş Yap' : 'Kayıt Ol'}
-          </button>
+          <input type="text" placeholder="Kullanıcı Adı" required value={formData.username} onChange={e => setFormData({...formData, username: e.target.value})} style={{ padding: '12px', borderRadius: '8px', border: '1px solid #e5e7eb', color: 'black' }} />
+          <input type="password" placeholder="Şifre" required value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})} style={{ padding: '12px', borderRadius: '8px', border: '1px solid #e5e7eb', color: 'black' }} />
+          <button type="submit" style={{ padding: '12px', borderRadius: '8px', border: 'none', backgroundColor: '#3b82f6', color: 'white', fontWeight: 'bold', cursor: 'pointer' }}>{isLogin ? 'Giriş Yap' : 'Kayıt Ol'}</button>
         </form>
         <div style={{ marginTop: '15px', textAlign: 'center', fontSize: '14px', color: '#6b7280' }}>
           {isLogin ? 'Hesabın yok mu?' : 'Zaten hesabın var mı?'}
-          <span onClick={() => setIsLogin(!isLogin)} style={{ color: '#3b82f6', fontWeight: 'bold', cursor: 'pointer', marginLeft: '5px' }}>
-            {isLogin ? 'Kayıt Ol' : 'Giriş Yap'}
-          </span>
+          <span onClick={() => setIsLogin(!isLogin)} style={{ color: '#3b82f6', fontWeight: 'bold', cursor: 'pointer', marginLeft: '5px' }}>{isLogin ? 'Kayıt Ol' : 'Giriş Yap'}</span>
         </div>
-        <div style={{marginTop:'20px', textAlign:'center'}}>
-           <a href="/" style={{textDecoration:'none', fontSize:'12px', color:'#9ca3af'}}>← Ana Sayfaya Dön</a>
-        </div>
+        <div style={{marginTop:'20px', textAlign:'center'}}><a href="/" style={{textDecoration:'none', fontSize:'12px', color:'#9ca3af'}}>← Ana Sayfaya Dön</a></div>
       </div>
     </div>
   );
 }
-// guncelleme v4
+// Kesin çözüm v5
