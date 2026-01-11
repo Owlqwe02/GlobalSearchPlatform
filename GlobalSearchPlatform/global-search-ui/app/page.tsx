@@ -14,11 +14,7 @@ interface Advertisement {
 
 export default function HomePage() {
   const router = useRouter();
-  
-  // --- KULLANICI STATE'İ ---
   const [user, setUser] = useState<any>(null);
-  
-  // --- İLAN VE FİLTRE STATE'LERİ ---
   const [ads, setAds] = useState<Advertisement[]>([]);
   const [loading, setLoading] = useState(true);
   const [showFilters, setShowFilters] = useState(false); 
@@ -38,26 +34,30 @@ export default function HomePage() {
   ];
 
   useEffect(() => {
-    // Kullanıcı kontrolü
     const checkUser = () => {
       const storedUser = localStorage.getItem('user');
       if (storedUser) setUser(JSON.parse(storedUser));
       else setUser(null);
     };
     checkUser();
-    
-    // İlanları çek
     fetchActiveAds();
   }, []);
 
   const fetchActiveAds = async () => {
+    // API URL: Render adresi ve /api eki eklendi
+    const baseUrl = (process.env.NEXT_PUBLIC_API_URL as string) || "https://globalsearchplatform.onrender.com/api";
+    
     try {
-      const res = await fetch('http://localhost:5295/api/Advertisements');
+      const res = await fetch(`${baseUrl}/Advertisements`);
       if (res.ok) {
         const data = await res.json();
         setAds(data.filter((ad: any) => ad.isActive));
       }
-    } catch (err) { console.error(err); } finally { setLoading(false); }
+    } catch (err) { 
+      console.error("Hata:", err); 
+    } finally { 
+      setLoading(false); 
+    }
   };
 
   const handleLogout = () => {
@@ -84,7 +84,6 @@ export default function HomePage() {
 
   return (
     <div style={{ fontFamily: 'sans-serif', backgroundColor: '#f3f4f6', minHeight: '100vh' }}>
-      
       <style jsx>{`
         .layout-container { max-width: 1200px; margin: 20px auto; padding: 0 20px; display: flex; gap: 30px; }
         .sidebar { width: 250px; flex-shrink: 0; }
@@ -100,19 +99,13 @@ export default function HomePage() {
         .filter-drawer { width: 320px; height: 100%; background: white; padding: 30px; box-shadow: -5px 0 15px rgba(0,0,0,0.1); }
       `}</style>
 
-      {/* --- HEADER --- */}
       <header style={{ backgroundColor: 'white', borderBottom: '1px solid #e2e8f0', padding: '15px 0', position:'sticky', top:0, zIndex:100 }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h1 onClick={() => router.push('/')} style={{ fontSize: '22px', fontWeight: '800', cursor: 'pointer', margin: 0, color: '#1e293b' }}>
-            🌍 Global Search
-          </h1>
-
+          <h1 onClick={() => router.push('/')} style={{ fontSize: '22px', fontWeight: '800', cursor: 'pointer', margin: 0, color: '#1e293b' }}>🌍 Global Search</h1>
           <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
             {user ? (
               <>
-                {user.role === 'Admin' && (
-                  <button onClick={() => router.push('/admin/ads')} style={{ backgroundColor: '#1a202c', color: 'white', border: 'none', padding: '10px 18px', borderRadius: '10px', fontWeight: 'bold', cursor: 'pointer', fontSize: '13px' }}>🛡️ Admin Panel</button>
-                )}
+                {user.role === 'Admin' && <button onClick={() => router.push('/admin/ads')} style={{ backgroundColor: '#1a202c', color: 'white', border: 'none', padding: '10px 18px', borderRadius: '10px', fontWeight: 'bold', cursor: 'pointer', fontSize: '13px' }}>🛡️ Admin</button>}
                 <button onClick={() => router.push('/my-ads')} style={{ backgroundColor: '#38a169', color: 'white', border: 'none', padding: '10px 18px', borderRadius: '10px', fontWeight: 'bold', cursor: 'pointer', fontSize: '13px' }}>➕ İlanlarım</button>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '5px 12px', backgroundColor: '#f1f5f9', borderRadius: '12px' }}>
                   <span style={{ fontSize: '14px', fontWeight: '700' }}>👤 {user.username}</span>
@@ -126,27 +119,23 @@ export default function HomePage() {
         </div>
       </header>
 
-      {/* --- ARAMA ÇUBUĞU --- */}
       <div className="search-area">
         <input type="text" placeholder="Kelime ile ilan ara..." className="search-input" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
         <button className="filter-btn" onClick={() => setShowFilters(true)}>⚙️ Filtrele</button>
       </div>
 
       <div className="layout-container">
-        {/* --- SOL TARAF: SABİT KATEGORİLER --- */}
         <aside className="sidebar">
           <div className="sidebar-card">
-            <p style={{fontSize:'12px', fontWeight:'700', color:'#94a3b8', marginBottom:'10px', paddingLeft:'10px'}}>KATEGORİLER</p>
+            <p style={{fontSize:'12px', fontWeight:'700', color:'#94a3b8', marginBottom:'10px'}}>KATEGORİLER</p>
             {categories.map(cat => (
               <div key={cat.name} className={`cat-item ${selectedCategory === cat.name ? 'cat-active' : ''}`} onClick={() => setSelectedCategory(cat.name)}>
-                <span style={{fontSize:'18px'}}>{cat.icon}</span>
-                {cat.name}
+                <span>{cat.icon}</span> {cat.name}
               </div>
             ))}
           </div>
         </aside>
 
-        {/* --- ANA İÇERİK: İLANLAR --- */}
         <main style={{ flex: 1 }}>
           <div className="grid-container">
             {filteredAds.map((ad) => (
@@ -155,7 +144,7 @@ export default function HomePage() {
                 <div style={{ padding: '15px' }}>
                   <h3 style={{ fontSize: '15px', margin: '0 0 8px 0', fontWeight: 'bold' }}>{ad.title}</h3>
                   <div style={{ fontSize: '18px', fontWeight: '800', color: '#2563eb' }}>{ad.price.toLocaleString()} ₺</div>
-                  <div style={{ marginTop: '10px', fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', fontWeight:'bold' }}>{ad.category}</div>
+                  <div style={{ marginTop: '10px', fontSize: '11px', color: '#94a3b8', fontWeight:'bold' }}>{ad.category}</div>
                 </div>
               </div>
             ))}
@@ -163,32 +152,15 @@ export default function HomePage() {
         </main>
       </div>
 
-      {/* --- SAĞDAN AÇILAN FİLTRE PANELİ --- */}
       {showFilters && (
         <div className="filter-overlay" onClick={() => setShowFilters(false)}>
           <div className="filter-drawer" onClick={(e) => e.stopPropagation()}>
-            <div style={{display:'flex', justifyContent:'space-between', marginBottom:'30px'}}>
-              <h2 style={{margin:0, fontSize:'20px'}}>Detaylı Filtre</h2>
-              <button onClick={() => setShowFilters(false)} style={{background:'none', border:'none', fontSize:'24px', cursor:'pointer'}}>×</button>
-            </div>
-
-            <label style={{fontWeight:'bold', fontSize:'14px'}}>Sıralama</label>
-            <select style={{width:'100%', padding:'10px', borderRadius:'8px', border:'1px solid #ddd', marginBottom:'20px'}} value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-              <option value="newest">En Yeniler</option>
-              <option value="priceAsc">Fiyat (Artan)</option>
-              <option value="priceDesc">Fiyat (Azalan)</option>
-            </select>
-
-            <label style={{fontWeight:'bold', fontSize:'14px'}}>Fiyat Aralığı</label>
-            <div style={{display:'flex', gap:'10px', marginBottom:'20px'}}>
-               <input type="number" placeholder="Min" style={{width:'100%', padding:'10px', border:'1px solid #ddd', borderRadius:'8px'}} value={minPrice} onChange={(e) => setMinPrice(e.target.value)} />
-               <input type="number" placeholder="Max" style={{width:'100%', padding:'10px', border:'1px solid #ddd', borderRadius:'8px'}} value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)} />
-            </div>
-
+            <h2>Detaylı Filtre</h2>
             <button onClick={() => setShowFilters(false)} style={{width:'100%', padding:'15px', background:'#3182ce', color:'white', border:'none', borderRadius:'10px', fontWeight:'bold', cursor:'pointer'}}>Uygula</button>
           </div>
         </div>
       )}
+      {/* Güncelleme: 1.0.1 */}
     </div>
   );
 }
