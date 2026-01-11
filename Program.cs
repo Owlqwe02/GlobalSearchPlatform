@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// CORS: Bağlantı reddini engellemek için kritik
+// 1. CORS: Vercel bağlantısını sağlar
 builder.Services.AddCors(options => {
     options.AddPolicy("AllowAll", policy => {
         policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
@@ -16,14 +16,19 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
     });
 
+// 2. PostgreSQL VERİTABANI: Render Internal URL kullanılıyor
+// Not: SmarterASP (MSSQL) yerine artık Render'ın kendi Postgres servisine bağlanıyoruz.
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+    ?? "postgresql://globalsearch_db_user:54trAdP67efo2ekm7xuYM9SW7rJLgZUE@dpg-d5huofggjchc73afukjg-a/globalsearch_db";
+
 builder.Services.AddDbContext<GlobalSearchContext>(options =>
-    options.UseSqlServer("Server=.\\SQLEXPRESS;Database=GlobalSearchDB;Trusted_Connection=True;TrustServerCertificate=True;"));
+    options.UseNpgsql(connectionString));
 
 var app = builder.Build();
 
-app.UseStaticFiles(); // upload-multiple için gerekli
-app.UseCors("AllowAll"); // CORS politikasını aktif et
-app.UseHttpsRedirection();
+// 3. MIDDLEWARE
+app.UseCors("AllowAll"); 
+app.UseStaticFiles(); 
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
