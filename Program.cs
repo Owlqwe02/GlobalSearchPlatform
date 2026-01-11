@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. CORS: Vercel bağlantısını sağlar
+// 1. CORS: Vercel'den gelen isteklere izin ver
 builder.Services.AddCors(options => {
     options.AddPolicy("AllowAll", policy => {
         policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
@@ -26,7 +26,7 @@ builder.Services.AddDbContext<GlobalSearchContext>(options =>
 
 var app = builder.Build();
 
-// 3. MIDDLEWARE
+// 3. MIDDLEWARE SIRALAMASI
 app.UseCors("AllowAll"); 
 app.UseStaticFiles(); 
 app.UseAuthorization();
