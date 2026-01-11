@@ -11,7 +11,7 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // API URL: Vercel değişkeni yoksa Render linkini kullan
+    // API URL: /api eki eklendi. Render üzerindeki .NET API yolu ile eşleşir.
     const baseUrl = (process.env.NEXT_PUBLIC_API_URL as string) || "https://globalsearchplatform.onrender.com/api";
     const endpoint = isLogin ? 'login' : 'register';
     
@@ -36,10 +36,10 @@ export default function LoginPage() {
         }
       } else {
         const errorMsg = await res.text();
-        alert("Hata (404/500): " + errorMsg);
+        alert("Sunucu Yanıtı (404/500): " + errorMsg);
       }
     } catch (err) {
-      alert("Bağlantı hatası! Sunucu şu an kapalı olabilir. API: " + baseUrl);
+      alert("Bağlantı hatası! API yolu: " + baseUrl);
     }
   };
 
@@ -82,4 +82,5 @@ export default function LoginPage() {
       </div>
     </div>
   );
-}// guncelleme 123
+}
+// guncelleme v4
