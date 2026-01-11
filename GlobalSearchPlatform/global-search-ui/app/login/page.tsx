@@ -11,7 +11,6 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // API URL: /api eki eklendi. Render üzerindeki .NET API'ye tam erişim sağlar.
     const baseUrl = (process.env.NEXT_PUBLIC_API_URL as string) || "https://globalsearchplatform.onrender.com/api";
     const endpoint = isLogin ? 'login' : 'register';
     
@@ -49,7 +48,6 @@ export default function LoginPage() {
         <h2 style={{ textAlign: 'center', marginBottom: '20px', color: '#1f2937' }}>
           {isLogin ? 'Giriş Yap' : 'Kayıt Ol'}
         </h2>
-        
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
           <input 
             type="text" 
@@ -71,17 +69,12 @@ export default function LoginPage() {
             {isLogin ? 'Giriş Yap' : 'Kayıt Ol'}
           </button>
         </form>
-
         <div style={{ marginTop: '15px', textAlign: 'center', fontSize: '14px', color: '#6b7280' }}>
           {isLogin ? 'Hesabın yok mu?' : 'Zaten hesabın var mı?'}
-          <span 
-            onClick={() => setIsLogin(!isLogin)} 
-            style={{ color: '#3b82f6', fontWeight: 'bold', cursor: 'pointer', marginLeft: '5px' }}
-          >
+          <span onClick={() => setIsLogin(!isLogin)} style={{ color: '#3b82f6', fontWeight: 'bold', cursor: 'pointer', marginLeft: '5px' }}>
             {isLogin ? 'Kayıt Ol' : 'Giriş Yap'}
           </span>
         </div>
-        
         <div style={{marginTop:'20px', textAlign:'center'}}>
            <a href="/" style={{textDecoration:'none', fontSize:'12px', color:'#9ca3af'}}>← Ana Sayfaya Dön</a>
         </div>
